@@ -20,11 +20,10 @@ export default function ProjectsView() {
 
       <ResultPanel label="Query result" meta={`${projects.length} rows in 0.002s`}>
         <Grid
-          headers={["id", "project", "role", "status"]}
+          headers={["id", "project", "status"]}
           rows={projects.map((p) => [
             p.id,
             <span className="text-text-0 font-medium" key={p.id}>{p.name}</span>,
-            p.role,
             <Badge kind={statusKind(p.status)} key={p.status}>{p.status}</Badge>,
           ])}
         />
@@ -34,27 +33,45 @@ export default function ProjectsView() {
       <QueryEditor
         lines={[
           <>
-            {kw("SELECT")} * {kw("FROM")} {fn("projects")}
+            {kw("SELECT")} * {kw("FROM")} {fn("project_details")}
           </>,
           <>
-            {kw("WHERE")} id {kw("=")} {str("'01'")};
+            {kw("WHERE")} project_id {kw("=")} {str("'01'")};
           </>,
         ]}
       />
       <ResultPanel label="Query result" meta="1 row returned">
         <Grid
-          headers={["field", "value"]}
+          headers={["project", "type", "role", "technologies"]}
           rows={[
-            ["project", projectDetails.sluCca.project],
-            ["type", projectDetails.sluCca.type],
-            ["role", projectDetails.sluCca.role],
-            ["technologies", projectDetails.sluCca.technologies],
+            [
+              projectDetails.sluCca.project,
+              projectDetails.sluCca.type,
+              projectDetails.sluCca.role,
+              projectDetails.sluCca.technologies,
+            ],
           ]}
         />
       </ResultPanel>
 
-      <PanelTitle>Project contributions</PanelTitle>
-      <ResultPanel label="Validated contributions" meta="4 items">
+      <PanelTitle>SQL editor</PanelTitle>
+      <QueryEditor
+        lines={[
+          <>
+            {kw("SELECT")} contribution
+          </>,
+          <>
+            {kw("FROM")} {fn("project_contributions")}
+          </>,
+          <>
+            {kw("WHERE")} project_id {kw("=")} {str("'01'")}
+          </>,
+          <>
+            {kw("ORDER BY")} id;
+          </>,
+        ]}
+      />
+      <ResultPanel label="Query result" meta="4 items">
         <Grid
           headers={["contribution"]}
           rows={projectDetails.sluCca.contributions.map((contribution) => [
@@ -69,27 +86,45 @@ export default function ProjectsView() {
       <QueryEditor
         lines={[
           <>
-            {kw("SELECT")} * {kw("FROM")} {fn("projects")}
+            {kw("SELECT")} * {kw("FROM")} {fn("project_details")}
           </>,
           <>
-            {kw("WHERE")} id {kw("=")} {str("'02'")};
+            {kw("WHERE")} project_id {kw("=")} {str("'02'")};
           </>,
         ]}
       />
       <ResultPanel label="Query result" meta="1 row returned">
         <Grid
-          headers={["field", "value"]}
+          headers={["project", "type", "role", "technologies"]}
           rows={[
-            ["project", projectDetails.adal.project],
-            ["type", projectDetails.adal.type],
-            ["role", projectDetails.adal.role],
-            ["technologies", projectDetails.adal.technologies],
+            [
+              projectDetails.adal.project,
+              projectDetails.adal.type,
+              projectDetails.adal.role,
+              projectDetails.adal.technologies,
+            ],
           ]}
         />
       </ResultPanel>
 
-      <PanelTitle>Project contributions — Adal</PanelTitle>
-      <ResultPanel label="Validated contributions" meta="4 items">
+      <PanelTitle>SQL editor</PanelTitle>
+      <QueryEditor
+        lines={[
+          <>
+            {kw("SELECT")} contribution
+          </>,
+          <>
+            {kw("FROM")} {fn("project_contributions")}
+          </>,
+          <>
+            {kw("WHERE")} project_id {kw("=")} {str("'02'")}
+          </>,
+          <>
+            {kw("ORDER BY")} id;
+          </>,
+        ]}
+      />
+      <ResultPanel label="Query result" meta="4 items">
         <Grid
           headers={["contribution"]}
           rows={projectDetails.adal.contributions.map((contribution) => [

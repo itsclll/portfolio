@@ -16,13 +16,49 @@ export default function TerminalView() {
   const [input, setInput] = useState("");
   const boxRef = useRef<HTMLDivElement>(null);
 
+  const normalizeCommand = (value: string) =>
+    value.trim().replace(/;\s*$/, "").replace(/\s+/g, " ").toUpperCase();
+
+  const resolveCommandOutput = (raw: string) => {
+    const normalized = normalizeCommand(raw);
+
+    if (normalized === "CLEAR" || normalized === "CLS") {
+      return "";
+    }
+
+    if (terminalResponses[normalized]) {
+      return terminalResponses[normalized];
+    }
+
+    const underscoreKey = normalized.replace(/\s+/g, "_");
+    if (terminalResponses[underscoreKey]) {
+      return terminalResponses[underscoreKey];
+    }
+
+    const selectMatch = raw.trim().match(/^SELECT\s+\*\s+FROM\s+([A-Z_]+)\s*;?$/i);
+    if (selectMatch) {
+      const table = selectMatch[1].toUpperCase();
+      const showQuery = `SHOW ${table}`;
+      if (terminalResponses[showQuery]) {
+        return terminalResponses[showQuery];
+      }
+    }
+
+    return `Unknown command: '${raw}'. Type HELP for a list of commands.`;
+  };
+
   const runCommand = () => {
     const raw = input.trim();
     if (!raw) return;
-    const cmd = raw.toUpperCase();
-    const output =
-      terminalResponses[cmd] ??
-      `Unknown command: '${raw}'. Type HELP for a list of commands.`;
+
+    const normalized = normalizeCommand(raw);
+    if (normalized === "CLEAR" || normalized === "CLS") {
+      setLog([]);
+      setInput("");
+      return;
+    }
+
+    const output = resolveCommandOutput(raw);
 
     setLog((prev) => [...prev, { type: "cmd", text: raw }, { type: "out", text: output }]);
     setInput("");
@@ -62,7 +98,7 @@ export default function TerminalView() {
         </div>
       </div>
       <div className="text-[11px] text-text-2 mt-2.5">
-        try: SHOW PROJECTS · SHOW SKILLS · SHOW QA · SHOW CONTACT
+        try: SELECT * FROM PROJECTS · SELECT * FROM SKILLS · SELECT * FROM QA · SELECT * FROM PROFILE · HELP · CLEAR / CLS
       </div>
     </div>
   );

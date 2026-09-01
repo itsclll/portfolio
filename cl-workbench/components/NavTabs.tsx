@@ -1,12 +1,13 @@
 export type ViewId = "database" | "qalab" | "projects" | "experience" | "terminal" | "contact" | "gear";
 
 const tabs: { id: ViewId; label: string }[] = [
-  { id: "database", label: "Database" },
-  { id: "qalab", label: "QA Lab" },
+  { id: "database", label: "Profile" },
   { id: "projects", label: "Projects" },
   { id: "experience", label: "Experience" },
   { id: "gear", label: "Gear" },
+  { id: "qalab", label: "QA Lab" },
   { id: "terminal", label: "Terminal" },
+  { id: "contact", label: "Contact" },
 ];
 
 export default function NavTabs({

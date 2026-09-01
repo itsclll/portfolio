@@ -5,7 +5,7 @@
 
 export const profile = {
   name: "Christian A. Lucina",
-  role: "IT Professional, Full-Stack Developer, QA Engineer",
+  role: "Full-Stack Developer, QA Engineer",
   specialization: "Software / QA / Database / Data",
   location: "Sudipen, La Union, Philippines",
   email: "christianlucina9@gmail.com",
@@ -125,9 +125,12 @@ export const projectDetails = {
 
 export const experience = [
   {
+    id: 1,
     role: "IT Intern (all-around)",
     company: "Global Transco ICT Solution, Makati",
     period: "Jan 2026 – May 2026",
+    start_date: "2026-01-01",
+    end_date: "2026-05-31",
     recognitionImages: ["/global-transco-recognition-1.jpg", "/global-transco-recognition-2.jpg"],
     responsibilities: [
       "Provided IT Support & Cybersecurity by troubleshooting hardware, software, network, and system issues through the company’s helpdesk ticketing system, while assisting with WatchGuard endpoint security and cybersecurity solutions, ensuring reliable day-to-day IT operations.",
@@ -137,9 +140,12 @@ export const experience = [
     ],
   },
   {
+    id: 2,
     role: "Data & Research Assistant",
     company: "Benguet State University",
     period: "Jun 2025 – Jul 2025",
+    start_date: "2025-06-01",
+    end_date: "2025-07-31",
     recognitionImages: ["/benguet-recognition-1.jpg", "/benguet-recognition-2.jpg"],
     responsibilities: [
       "Engineered an ML dataset pipeline by collecting, cleaning, and preprocessing potato and cabbage leaf images with corresponding SPAD chlorophyll measurements, preparing structured data for machine learning applications.",
@@ -150,17 +156,66 @@ export const experience = [
   },
 ];
 
+export const responsibilities = experience.flatMap((item) =>
+  item.responsibilities.map((responsibility) => ({
+    experience_id: item.id,
+    responsibility,
+  })),
+);
+
+const profileSummary = [
+  `name: ${profile.name}`,
+  `role: ${profile.role}`,
+  `specialization: ${profile.specialization}`,
+  `location: ${profile.location}`,
+  `email: ${profile.email}`,
+  `phone: ${profile.phone}`,
+  `status: ${profile.status}`,
+].join("\n");
+
+const educationSummary = [
+  `school: ${education.school}`,
+  `degree: ${education.degree}`,
+  `period: ${education.period}`,
+  `honors: ${education.honors}`,
+  `gwa: ${education.gwa}`,
+  `status: ${education.status}`,
+].join("\n");
+
+const certificationSummary = certifications
+  .map((item) => `${item.name} — ${item.issuer} — ${item.result}`)
+  .join("\n");
+
+const projectSummary = projects.map((project) => `${project.name} — ${project.role} (${project.status})`).join("\n");
+const experienceSummary = experience.map((item) => `${item.role}, ${item.company} (${item.period})`).join("\n");
+const qaSummary = testCases.map((item) => `${item.id} | ${item.name} | ${item.status}`).join("\n");
+const bugSummary = [
+  `id: ${bugTicket.id}`,
+  `status: ${bugTicket.status}`,
+  `project: ${bugTicket.project}`,
+  `severity: ${bugTicket.severity}`,
+  `description: ${bugTicket.description}`,
+  `investigation: ${bugTicket.investigation.join("; ")}`,
+].join("\n");
+
+const gearSummary = gearSections
+  .map((section) => `${section.title}\n${section.items.map((item) => `- ${item.name}: ${item.detail}`).join("\n")}`)
+  .join("\n\n");
+
 // terminal command responses — keys must be UPPERCASE
 export const terminalResponses: Record<string, string> = {
-  HELP: "Available commands: SHOW TABLES, SHOW PROJECTS, SHOW SKILLS, SHOW QA, SHOW EXPERIENCE, SHOW CONTACT",
+  HELP: "Available commands:\n- SELECT * FROM TABLES\n- SELECT * FROM PROFILE\n- SELECT * FROM EDUCATION\n- SELECT * FROM SKILLS\n- SELECT * FROM CERTIFICATIONS\n- SELECT * FROM PROJECTS\n- SELECT * FROM QA\n- SELECT * FROM EXPERIENCE\n- SELECT * FROM CONTACT\n- SELECT * FROM BUG_TICKET\n- SELECT * FROM GEAR\n- SHOW PROFILE, SHOW PROJECTS, SHOW SKILLS, SHOW QA\n- CLEAR / CLS (clears the terminal output)",
   "SHOW TABLES":
-    "+----------------------+\n| Tables_in_portfolio  |\n+----------------------+\n| profile              |\n| experience           |\n| projects             |\n| skills               |\n| test_cases           |\n| bug_reports          |\n+----------------------+\n6 rows in set (0.001 sec)",
-  "SHOW PROJECTS": "SLU CCA Ticketing System\n\n1 row returned.",
+    "+----------------------+\n| Tables_in_portfolio  |\n+----------------------+\n| profile              |\n| education           |\n| skills              |\n| certifications      |\n| projects            |\n| experience          |\n| test_cases          |\n| bug_reports         |\n| gear                |\n+----------------------+\n9 rows in set (0.001 sec)",
+  "SHOW PROFILE": `${profileSummary}\n\n1 row returned.`,
+  "SHOW EDUCATION": `${educationSummary}\n\n1 row returned.`,
+  "SHOW PROJECTS": `${projectSummary}\n\n${projects.length} rows returned.`,
   "SHOW SKILLS":
-    "JavaScript, TypeScript, Java, PHP, Python\nReact.js, Next.js, Tailwind CSS\nNode.js, Express.js\nMySQL, Supabase, Prisma ORM\nAWS, GCP, Azure, Docker, GitHub Actions\n\n5 rows returned.",
-  "SHOW QA":
-    "Flight info workflow testing\nSystem functionality checks\nLAN / network performance checks\nDatabase-related process validation\nDefect tracking and regression testing\n\n5 rows returned.",
-  "SHOW EXPERIENCE":
-    "IT Intern, Global Transco ICT Solution (Jan 2026 - May 2026)\nData & Research Assistant, Benguet State University (Jun 2025 - Jul 2025)\n\n2 rows returned.",
+    `${skills.map((item) => `${item.category}: ${item.value}`).join("\n")}\n\n${skills.length} rows returned.`,
+  "SHOW CERTIFICATIONS": `${certificationSummary}\n\n${certifications.length} rows returned.`,
+  "SHOW QA": `${qaSummary}\n\n${testCases.length} rows returned.`,
+  "SHOW EXPERIENCE": `${experienceSummary}\n\n${experience.length} rows returned.`,
+  "SHOW BUG_TICKET": `${bugSummary}\n\n1 row returned.`,
+  "SHOW GEAR": `${gearSummary}\n\n${gearSections.reduce((total, section) => total + section.items.length, 0)} rows returned.`,
   "SHOW CONTACT": `email: ${profile.email}\nphone: ${profile.phone}\nlocation: ${profile.location}\nlinkedin: ${profile.linkedin}\n\n1 row returned.`,
 };

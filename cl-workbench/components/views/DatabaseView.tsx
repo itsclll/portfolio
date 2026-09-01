@@ -84,13 +84,13 @@ export default function DatabaseView({ section }: { section: DatabaseSection | n
       <PanelTitle>Query result</PanelTitle>
       <div id="database-profile">
         <ResultPanel label="Data output" meta="1 row in 0.003s">
-        <div className="flex items-center gap-4 px-3.5 pt-3.5 pb-0">
-          <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-accent-dim shrink-0 relative bg-bg-2">
-            <Image src={profile.photo} alt={profile.name} fill className="object-cover" />
+        <div className="flex items-center gap-4 px-3.5 pt-3.5 pb-3 leading-none">
+          <div className="h-40 w-40 overflow-hidden rounded-lg border-2 border-accent-dim shrink-0 relative bg-bg-2">
+            <Image src={profile.photo} alt={profile.name} fill className="object-cover object-center" sizes="200px" />
           </div>
-          <div>
+          <div className="leading-none">
             <div className="text-[15px] font-semibold text-text-0">{profile.name}</div>
-            <div className="text-xs text-accent">{profile.role}</div>
+            <div className="mt-1 text-xs text-accent">{profile.role}</div>
           </div>
         </div>
         <Grid

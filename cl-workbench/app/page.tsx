@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import BootScreen from "@/components/BootScreen";
 import TopBar from "@/components/TopBar";
 import NavTabs, { ViewId } from "@/components/NavTabs";
-import Sidebar from "@/components/Sidebar";
+import Sidebar, { DatabaseSection } from "@/components/Sidebar";
 import DatabaseView from "@/components/views/DatabaseView";
 import QALabView from "@/components/views/QALabView";
 import ProjectsView from "@/components/views/ProjectsView";
@@ -12,13 +12,23 @@ import ExperienceView from "@/components/views/ExperienceView";
 import TerminalView from "@/components/views/TerminalView";
 import ContactView from "@/components/views/ContactView";
 import GearView from "@/components/views/GearView";
-import { DatabaseSection } from "@/components/Sidebar";
 
 export default function Home() {
   const [entered, setEntered] = useState(false);
-  const [view, setView] = useState<ViewId>("database");
+  const [view, setView] = useState<ViewId>("projects");
   const [databaseSection, setDatabaseSection] = useState<DatabaseSection | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const mainRef = useRef<HTMLElement | null>(null);
+
+  const handleViewChange = (nextView: ViewId) => {
+    setView(nextView);
+
+    requestAnimationFrame(() => {
+      if (mainRef.current) {
+        mainRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+  };
 
   if (!entered) {
     return <BootScreen onEnter={() => setEntered(true)} />;
@@ -28,16 +38,19 @@ export default function Home() {
     <div className="flex h-screen flex-col overflow-hidden">
       <div className="shrink-0">
         <TopBar />
-        <NavTabs active={view} onChange={setView} />
+        <NavTabs active={view} onChange={handleViewChange} />
       </div>
       <div className="flex min-h-0 flex-1 overflow-hidden">
         <Sidebar
-          onGoto={setView}
+          onGoto={handleViewChange}
           onDatabaseSelect={setDatabaseSection}
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
         />
-        <main className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-4 sm:px-5 sm:py-5 lg:px-[26px] lg:py-[22px]">
+        <main
+          ref={mainRef}
+          className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-4 sm:px-5 sm:py-5 lg:px-[26px] lg:py-[22px]"
+        >
           <button
             type="button"
             onClick={() => setSidebarOpen(true)}

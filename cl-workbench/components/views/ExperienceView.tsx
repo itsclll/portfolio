@@ -3,7 +3,20 @@
 import { useState } from "react";
 import QueryEditor, { kw, fn } from "@/components/QueryEditor";
 import { ResultPanel, Grid, PanelTitle } from "@/components/ResultPanel";
-import { experience } from "@/lib/data";
+import { experience, responsibilities } from "@/lib/data";
+
+function formatMonthYear(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    year: "numeric",
+  }).format(date);
+}
 
 function RecognitionPreview({
   company,
@@ -77,49 +90,74 @@ export default function ExperienceView() {
       <QueryEditor
         lines={[
           <>
-            {kw("SELECT")} * {kw("FROM")} {fn("experience")}
+            {kw("SELECT")}
           </>,
-          <>{kw("ORDER BY")} start_date {kw("DESC")};</>,
+          <>
+            &nbsp;&nbsp;id,
+          </>,
+          <>
+            &nbsp;&nbsp;role,
+          </>,
+          <>
+            &nbsp;&nbsp;company,
+          </>,
+          <>
+            &nbsp;&nbsp;{kw("DATE_FORMAT")}(start_date, {'%b %Y'}) {kw("AS")} start_date,
+          </>,
+          <>
+            &nbsp;&nbsp;{kw("DATE_FORMAT")}(end_date, {'%b %Y'}) {kw("AS")} end_date
+          </>,
+          <>
+            {kw("FROM")} {fn("experience")}
+          </>,
+          <>
+            {kw("ORDER BY")} start_date {kw("DESC")};
+          </>,
         ]}
       />
 
       <ResultPanel label="Query result" meta={`${experience.length} rows`}>
         <Grid
-          headers={["role", "company", "period", "credentials"]}
+          headers={["id", "role", "company", "start_date", "end_date"]}
           rows={experience.map((e) => [
+            e.id,
             <span className="text-text-0 font-medium" key={e.role}>{e.role}</span>,
             e.company,
-            e.period,
-            <RecognitionPreview key={e.company} company={e.company} images={e.recognitionImages} />,
+            formatMonthYear(e.start_date),
+            formatMonthYear(e.end_date),
           ])}
         />
       </ResultPanel>
 
-      {experience.map((e) => (
-        <div key={e.role}>
-          <PanelTitle>Role detail — {e.company}</PanelTitle>
-          <QueryEditor
-            lines={[
-              <>
-                {kw("SELECT")} responsibilities {kw("FROM")} {fn("experience")}
-              </>,
-              <>
-                {kw("WHERE")} company = <span className="text-string">'{e.company}'</span>;
-              </>,
-            ]}
-          />
-          <ResultPanel label="responsibilities">
-            <Grid
-              headers={["responsibility"]}
-              rows={e.responsibilities.map((r) => [
-                <span className="block w-full leading-relaxed md:w-3/4" key={r}>
-                  {r}
-                </span>,
-              ])}
+      {experience.map((e) => {
+        const experienceResponsibilities = responsibilities.filter((item) => item.experience_id === e.id);
+
+        return (
+          <div key={e.id}>
+            <PanelTitle>Role detail — {e.company}</PanelTitle>
+            <QueryEditor
+              lines={[
+                <>
+                  {kw("SELECT")} responsibility {kw("FROM")} {fn("responsibilities")}
+                </>,
+                <>
+                  {kw("WHERE")} experience_id {kw("=")} {e.id};
+                </>,
+              ]}
             />
-          </ResultPanel>
-        </div>
-      ))}
+            <ResultPanel label="Query result" meta={`${experienceResponsibilities.length} rows`}>
+              <Grid
+                headers={["responsibility"]}
+                rows={experienceResponsibilities.map((item) => [
+                  <span className="block w-full leading-relaxed md:w-3/4" key={item.responsibility}>
+                    {item.responsibility}
+                  </span>,
+                ])}
+              />
+            </ResultPanel>
+          </div>
+        );
+      })}
     </div>
   );
 }

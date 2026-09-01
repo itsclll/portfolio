@@ -5,10 +5,45 @@ import { PanelTitle } from "@/components/ResultPanel";
 
 export default function ContactView() {
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmitted(true);
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const payload = {
+      name: String(formData.get("name") ?? "").trim(),
+      email: String(formData.get("email") ?? "").trim(),
+      message: String(formData.get("message") ?? "").trim(),
+    };
+
+    setError("");
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error ?? "Unable to send your message.");
+      }
+
+      setSubmitted(true);
+      form.reset();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Unable to send your message.";
+      setError(message);
+      setSubmitted(false);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -18,7 +53,7 @@ export default function ContactView() {
         <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-bg-2">
           <div>
             <h1 className="text-sm font-semibold text-text-0">Create a contact request</h1>
-            <p className="mt-1 text-[11px] text-text-2">Send a message to christian_portfolio</p>
+            <p className="mt-1 text-[11px] text-text-2">Send a message to christian lucina</p>
           </div>
           <span className="text-[10px] text-green border border-green/30 bg-green/10 rounded px-2 py-1">
             accepting requests
@@ -61,13 +96,20 @@ export default function ContactView() {
 
           <div className="flex items-center justify-between gap-4 pt-1">
             <p className="text-[10px] text-text-2" aria-live="polite">
-              {submitted ? "request queued successfully" : "status: ready to send"}
+              {error
+                ? error
+                : submitted
+                  ? "request queued successfully"
+                  : isSubmitting
+                    ? "sending..."
+                    : "status: ready to send"}
             </p>
             <button
               type="submit"
-              className="rounded border border-accent bg-accent px-4 py-2 text-xs font-medium text-bg-0 transition-colors md:hover:bg-[#66b7ff]"
+              disabled={isSubmitting}
+              className="rounded border border-accent bg-accent px-4 py-2 text-xs font-medium text-bg-0 transition-colors disabled:cursor-not-allowed disabled:opacity-60 md:hover:bg-[#66b7ff]"
             >
-              Send message
+              {isSubmitting ? "Sending..." : "Send message"}
             </button>
           </div>
         </form>

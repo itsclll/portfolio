@@ -33,7 +33,7 @@ export default function BootScreen({ onEnter }: { onEnter: () => void }) {
     <div className="min-h-screen flex flex-col items-center justify-center p-5">
       <div className="w-full max-w-[520px]">
         <div className="text-[11px] text-text-2 tracking-[0.1em] mb-4">
-          MYSQL WORKBENCH
+          CL WORKBENCH
         </div>
         <div className="h-px bg-border mb-5" />
         <div className="text-[13px] leading-[1.9] text-text-1 min-h-[170px]">
@@ -49,15 +49,15 @@ export default function BootScreen({ onEnter }: { onEnter: () => void }) {
             showCard ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none"
           }`}
         >
-          <div className="w-[84px] h-[84px] rounded-full overflow-hidden border-2 border-accent-dim mx-auto mb-4 relative bg-bg-2">
+          <div className="mx-auto mb-4 h-[180px] w-[180px] overflow-hidden rounded-lg border-2 border-accent-dim bg-bg-2 relative">
             {/* Replace /public/photo.jpg with your own photo */}
-            <Image src={profile.photo} alt={profile.name} fill className="object-cover" />
+            <Image src={profile.photo} alt={profile.name} fill className="object-cover object-center" sizes="180px" />
           </div>
           <div className="text-[22px] font-bold tracking-wide mb-2.5">
             {profile.name.toUpperCase()}
           </div>
           <div className="text-[12.5px] text-accent leading-[1.9] mb-3.5">
-            IT PROFESSIONAL
+            
             <br />
             FULL-STACK DEVELOPER
             <br />

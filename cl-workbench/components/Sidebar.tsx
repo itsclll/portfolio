@@ -11,33 +11,29 @@ type SidebarProps = {
 
 const groups: { label: string; items: { name: string; goto: ViewId }[] }[] = [
   {
-    label: "Database",
+    label: "Profile",
     items: [
-      { name: "profile", goto: "database" },
+      { name: "personal details", goto: "database" },
       { name: "education", goto: "database" },
       { name: "skills", goto: "database" },
       { name: "certifications", goto: "database" },
     ],
   },
   {
-    label: "QA test lab",
+    label: "Portfolio",
     items: [
-      { name: "test_cases", goto: "qalab" },
-      { name: "bug_reports", goto: "qalab" },
-      { name: "test_results", goto: "qalab" },
+      { name: "Projects", goto: "projects" },
+      { name: "Experience", goto: "experience" },
+      { name: "Gear", goto: "gear" },
+      { name: "QA Lab", goto: "qalab" },
     ],
   },
   {
-    label: "Personal",
-    items: [{ name: "gear", goto: "gear" }],
-  },
-  {
-    label: "System logs",
-    items: [{ name: "query_history", goto: "terminal" }],
-  },
-  {
-    label: "Contact",
-    items: [{ name: "contact_requests", goto: "contact" }],
+    label: "System",
+    items: [
+      { name: "Terminal", goto: "terminal" },
+      { name: "Contact", goto: "contact" },
+    ],
   },
 ];
 

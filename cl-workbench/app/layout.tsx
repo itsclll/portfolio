@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "CL_WORKBENCH — christian_portfolio",
-  description: "Christian A. Lucina — IT Professional, Full-Stack Developer, QA Engineer",
+  description: "Christian A. Lucina —  Full-Stack Developer, QA Engineer",
   icons: {
     icon: "/favicon.svg",
   },

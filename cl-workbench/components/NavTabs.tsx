@@ -18,7 +18,7 @@ export default function NavTabs({
   onChange: (id: ViewId) => void;
 }) {
   return (
-    <div className="flex gap-1 overflow-x-auto bg-bg-1 px-2 sm:px-5 lg:px-6">
+    <div className="hidden gap-1 overflow-x-auto bg-bg-1 px-2 sm:flex sm:px-5 lg:px-6">
       {tabs.map((tab) => (
         <button
           key={tab.id}

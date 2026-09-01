@@ -9,14 +9,14 @@ type SidebarProps = {
   onClose: () => void;
 };
 
-const groups: { label: string; items: { name: string; goto: ViewId }[] }[] = [
+const groups: { label: string; items: { name: string; goto: ViewId; section?: DatabaseSection }[] }[] = [
   {
     label: "Profile",
     items: [
-      { name: "personal details", goto: "database" },
-      { name: "education", goto: "database" },
-      { name: "skills", goto: "database" },
-      { name: "certifications", goto: "database" },
+      { name: "personal details", goto: "database", section: "profile" },
+      { name: "education", goto: "database", section: "education" },
+      { name: "skills", goto: "database", section: "skills" },
+      { name: "certifications", goto: "database", section: "certifications" },
     ],
   },
   {
@@ -64,11 +64,12 @@ export default function Sidebar({ onGoto, onDatabaseSelect, isOpen, onClose }: S
             <button
               key={item.name}
               onClick={() => {
+                if (item.goto === "database" && onDatabaseSelect && item.section) {
+                  onDatabaseSelect(item.section);
+                }
+
                 onGoto(item.goto);
                 onClose();
-                if (item.goto === "database" && onDatabaseSelect) {
-                  onDatabaseSelect(item.name as DatabaseSection);
-                }
               }}
               className="block w-full text-left pl-[28px] pr-4 py-1.5 text-[12.5px] leading-none tracking-normal text-text-1 border-l-2 border-transparent md:hover:bg-bg-2 md:hover:text-text-0"
             >

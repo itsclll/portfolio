@@ -10,9 +10,12 @@ export const profile = {
   location: "Sudipen, La Union, Philippines",
   email: "christianlucina9@gmail.com",
   phone: "+63 976 215 6652",
-  linkedin: "https://linkedin.com/in/christian-lucina", // replace with your real URL
+  linkedin: "https://www.linkedin.com/in/christian-lucina-5a8686295",
+  facebook: "https://www.facebook.com/christian.lucina.7/",
+  github: "https://github.com/itsclll",
   status: "Available",
-  photo: "/photo.jpg", // drop your photo in /public as photo.jpg
+  photo: "/photo.jpg",
+  photos: ["/cl4.jpg", "/cl1.jpg", "/cl3.jpg", "/cl2.jpg", "/photo.jpg"],
 };
 
 export const education = {

@@ -21,23 +21,40 @@ export default function Home() {
   const mainRef = useRef<HTMLElement | null>(null);
 
   const handleViewChange = (nextView: ViewId) => {
+    if (nextView === view) {
+      return;
+    }
+
+    const isSwitchingToDatabase = nextView === "database";
+    const isLeavingDatabase = view === "database";
+
     setView(nextView);
 
-    requestAnimationFrame(() => {
-      if (mainRef.current) {
-        mainRef.current.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    });
+    if (!isSwitchingToDatabase && !isLeavingDatabase) {
+      requestAnimationFrame(() => {
+        if (mainRef.current) {
+          mainRef.current.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+    }
   };
 
   if (!entered) {
-    return <BootScreen onEnter={() => setEntered(true)} />;
+    return (
+      <BootScreen
+        onEnter={() => {
+          setEntered(true);
+          setView("database");
+          setDatabaseSection("profile");
+        }}
+      />
+    );
   }
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
       <div className="shrink-0">
-        <TopBar />
+        <TopBar onToggleSidebar={() => setSidebarOpen((open) => !open)} />
         <NavTabs active={view} onChange={handleViewChange} />
       </div>
       <div className="flex min-h-0 flex-1 overflow-hidden">
@@ -51,14 +68,6 @@ export default function Home() {
           ref={mainRef}
           className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-4 sm:px-5 sm:py-5 lg:px-[26px] lg:py-[22px]"
         >
-          <button
-            type="button"
-            onClick={() => setSidebarOpen(true)}
-            className="mb-4 border border-border bg-bg-1 px-3 py-2 text-xs text-text-1 md:hover:border-accent md:hover:text-text-0 md:hidden"
-            aria-label="Open navigation menu"
-          >
-            Menu
-          </button>
           {view === "database" && <DatabaseView section={databaseSection} />}
           {view === "qalab" && <QALabView />}
           {view === "projects" && <ProjectsView />}

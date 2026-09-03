@@ -99,7 +99,7 @@ export default function ContactView() {
               {error
                 ? error
                 : submitted
-                  ? "request queued successfully"
+                  ? "request sent successfully"
                   : isSubmitting
                     ? "sending..."
                     : "status: ready to send"}

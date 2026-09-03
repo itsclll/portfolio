@@ -48,7 +48,7 @@ export async function POST(request: Request) {
       `,
     });
 
-    return NextResponse.json({ success: true, message: "request queued successfully" });
+    return NextResponse.json({ success: true, message: "request sent successfully" });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
     console.error("Contact email failed:", message);

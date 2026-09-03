@@ -245,6 +245,9 @@ export const terminalResponses: Record<string, string> = {
   "SELECT ID, ROLE, COMPANY, DATE_FORMAT(START_DATE, '%B %Y') AS START_DATE, DATE_FORMAT(END_DATE, '%B %Y') AS END_DATE FROM EXPERIENCE ORDER BY START_DATE DESC": experience
     .map((item) => `${item.id} | ${item.role} | ${item.company} | ${item.period}`)
     .join("\n") + `\n\n${experience.length} rows returned.`,
+  "SELECT ID, ROLE, COMPANY, START_DATE, END_DATE FROM EXPERIENCE ORDER BY START_DATE DESC": experience
+    .map((item) => `${item.id} | ${item.role} | ${item.company} | ${item.period}`)
+    .join("\n") + `\n\n${experience.length} rows returned.`,
   "SELECT RESPONSIBILITY FROM RESPONSIBILITIES WHERE EXPERIENCE_ID = 1": responsibilities
     .filter((item) => item.experience_id === 1)
     .map((item) => item.responsibility)
@@ -260,4 +263,21 @@ export const terminalResponses: Record<string, string> = {
     .map((item) => `${item.name} | ${item.detail} | ${item.url}`)
     .join("\n") + `\n\n${gearSections[1].items.length} rows returned.`,
   "SELECT * FROM TEST_CASES WHERE PROJECT = 'FIDS'": `${qaSummary}\n\n${testCases.length} rows returned.`,
+};
+
+export const normalizePortfolioQuery = (value: string) =>
+  value.trim().replace(/;\s*$/, "").replace(/\s+/g, " ").toUpperCase();
+
+export const resolvePortfolioQuery = (raw: string) => {
+  const normalized = normalizePortfolioQuery(raw);
+
+  if (terminalResponses[normalized]) return terminalResponses[normalized];
+
+  const underscoreKey = normalized.replace(/\s+/g, "_");
+  if (terminalResponses[underscoreKey]) return terminalResponses[underscoreKey];
+
+  const selectMatch = raw.trim().match(/^SELECT\s+\*\s+FROM\s+([A-Z_]+)\s*;?$/i);
+  if (selectMatch) return terminalResponses[`SELECT * FROM ${selectMatch[1].toUpperCase()}`] ?? null;
+
+  return null;
 };

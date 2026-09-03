@@ -1,10 +1,12 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import QueryEditor, { kw, fn, str } from "@/components/QueryEditor";
+import QueryOutput from "@/components/QueryOutput";
+import type { QueryRun } from "@/components/QueryEditor";
 import { ResultPanel, Grid, PanelTitle } from "@/components/ResultPanel";
 import Badge from "@/components/Badge";
 import type { DatabaseSection } from "@/components/Sidebar";
-import { profile, education, certifications, skills } from "@/lib/data";
+import { normalizePortfolioQuery, profile, education, certifications, skills } from "@/lib/data";
  
 const skillImages: Record<string, string> = {
   JavaScript: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
@@ -183,14 +185,16 @@ export default function DatabaseView({ section }: { section: DatabaseSection | n
   }, [section]);
  
   const photos = profile.photos && profile.photos.length ? profile.photos : [profile.photo];
-  const [hasRun, setHasRun] = useState(false);
+  const [result, setResult] = useState<QueryRun | null>(null);
+  const isProfileQuery = Boolean(result && normalizePortfolioQuery(result.query) === normalizePortfolioQuery("SELECT * FROM profile;"));
  
   return (
     <div>
       <PanelTitle>SQL editor</PanelTitle>
       <QueryEditor
-        onRun={() => setHasRun(true)}
+        onRun={setResult}
         formattedQuery="SELECT * FROM profile;"
+        explanation="Retrieves the profile details, contact information, and current availability."
         lines={[
           <>{kw("SELECT")} *</>,
           <>
@@ -199,9 +203,9 @@ export default function DatabaseView({ section }: { section: DatabaseSection | n
         ]}
       />
 
-      {hasRun && <PanelTitle>Query result</PanelTitle>}
+      {isProfileQuery && <PanelTitle>Query result</PanelTitle>}
 
-      {hasRun && <div id="database-profile">
+      {isProfileQuery && <div id="database-profile">
         <ResultPanel label="Data output" meta="1 row in 0.003s">
           <div className="px-3.5 py-3.5">
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-[340px_minmax(0,1fr)]">
@@ -278,6 +282,7 @@ export default function DatabaseView({ section }: { section: DatabaseSection | n
           </div>
         </ResultPanel>
       </div>}
+      {result && !isProfileQuery && <QueryOutput result={result} />}
  
       <div id="database-education">
         <PanelTitle>Education</PanelTitle>

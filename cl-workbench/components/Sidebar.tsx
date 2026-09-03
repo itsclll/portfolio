@@ -5,6 +5,8 @@ export type DatabaseSection = "profile" | "education" | "skills" | "certificatio
 type SidebarProps = {
   onGoto: (id: ViewId) => void;
   onDatabaseSelect?: (section: DatabaseSection) => void;
+  activeView: ViewId;
+  activeDatabaseSection: DatabaseSection | null;
   isOpen: boolean;
   onClose: () => void;
 };
@@ -37,7 +39,14 @@ const groups: { label: string; items: { name: string; goto: ViewId; section?: Da
   },
 ];
 
-export default function Sidebar({ onGoto, onDatabaseSelect, isOpen, onClose }: SidebarProps) {
+export default function Sidebar({
+  onGoto,
+  onDatabaseSelect,
+  activeView,
+  activeDatabaseSection,
+  isOpen,
+  onClose,
+}: SidebarProps) {
   return (
     <>
       {isOpen && (
@@ -60,22 +69,32 @@ export default function Sidebar({ onGoto, onDatabaseSelect, isOpen, onClose }: S
           <div className="px-4 pt-2.5 pb-1.5 text-[10px] leading-none text-text-2 uppercase tracking-wider">
             {group.label}
           </div>
-          {group.items.map((item) => (
-            <button
-              key={item.name}
-              onClick={() => {
-                if (item.goto === "database" && onDatabaseSelect && item.section) {
-                  onDatabaseSelect(item.section);
-                }
+          {group.items.map((item) => {
+            const isActive = activeView === item.goto &&
+              (item.goto !== "database" || activeDatabaseSection === item.section);
 
-                onGoto(item.goto);
-                onClose();
-              }}
-              className="block w-full text-left pl-[28px] pr-4 py-1.5 text-[12.5px] leading-none tracking-normal text-text-1 border-l-2 border-transparent md:hover:bg-bg-2 md:hover:text-text-0"
-            >
-              {item.name}
-            </button>
-          ))}
+            return (
+              <button
+                key={item.name}
+                onClick={() => {
+                  if (item.goto === "database" && onDatabaseSelect && item.section) {
+                    onDatabaseSelect(item.section);
+                  }
+
+                  onGoto(item.goto);
+                  onClose();
+                }}
+                aria-current={isActive ? "page" : undefined}
+                className={`block w-full border-l-2 py-1.5 pl-[28px] pr-4 text-left text-[12.5px] leading-none tracking-normal transition-colors md:hover:bg-bg-2 md:hover:text-text-0 ${
+                  isActive
+                    ? "border-accent bg-accent/10 text-accent"
+                    : "border-transparent text-text-1"
+                }`}
+              >
+                {item.name}
+              </button>
+            );
+          })}
         </div>
       ))}
       </aside>

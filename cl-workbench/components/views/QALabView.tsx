@@ -1,18 +1,22 @@
 import { useState } from "react";
 import QueryEditor, { kw, fn, str } from "@/components/QueryEditor";
+import QueryOutput from "@/components/QueryOutput";
+import type { QueryRun } from "@/components/QueryEditor";
 import { ResultPanel, Grid, PanelTitle } from "@/components/ResultPanel";
 import Badge from "@/components/Badge";
-import { testCases, bugTicket } from "@/lib/data";
+import { normalizePortfolioQuery, testCases, bugTicket } from "@/lib/data";
 
 export default function QALabView() {
-  const [hasRun, setHasRun] = useState(false);
+  const [result, setResult] = useState<QueryRun | null>(null);
+  const isTestCasesQuery = Boolean(result && normalizePortfolioQuery(result.query) === normalizePortfolioQuery("SELECT * FROM test_cases WHERE project = 'FIDS';"));
 
   return (
     <div>
       <PanelTitle>SQL editor</PanelTitle>
       <QueryEditor
-        onRun={() => setHasRun(true)}
+        onRun={setResult}
         formattedQuery="SELECT * FROM test_cases WHERE project = 'FIDS';"
+        explanation="Shows the FIDS test cases and their latest QA status."
         lines={[
           <>
             {kw("SELECT")} * {kw("FROM")} {fn("test_cases")}
@@ -23,7 +27,7 @@ export default function QALabView() {
         ]}
       />
 
-      {hasRun && <ResultPanel label="Test cases" meta={`${testCases.length} rows`}>
+      {isTestCasesQuery && <ResultPanel label="Test cases" meta={`${testCases.length} rows`}>
         <Grid
           headers={["id", "case", "status"]}
           rows={testCases.map((t) => [
@@ -35,6 +39,7 @@ export default function QALabView() {
           ])}
         />
       </ResultPanel>}
+      {result && !isTestCasesQuery && <QueryOutput result={result} />}
 
       <PanelTitle>Bug report</PanelTitle>
       <div className="border border-border rounded-md bg-bg-1 px-5 py-4.5">

@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import BootScreen from "@/components/BootScreen";
 import TopBar from "@/components/TopBar";
-import NavTabs, { ViewId } from "@/components/NavTabs";
+import { ViewId } from "@/components/NavTabs";
 import Sidebar, { DatabaseSection } from "@/components/Sidebar";
 import DatabaseView from "@/components/views/DatabaseView";
 import QALabView from "@/components/views/QALabView";
@@ -55,12 +55,13 @@ export default function Home() {
     <div className="flex h-screen flex-col overflow-hidden">
       <div className="shrink-0">
         <TopBar onToggleSidebar={() => setSidebarOpen((open) => !open)} />
-        <NavTabs active={view} onChange={handleViewChange} />
       </div>
       <div className="flex min-h-0 flex-1 overflow-hidden">
         <Sidebar
           onGoto={handleViewChange}
           onDatabaseSelect={setDatabaseSection}
+          activeView={view}
+          activeDatabaseSection={databaseSection}
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
         />

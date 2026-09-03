@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import QueryEditor, { kw, fn } from "@/components/QueryEditor";
+import QueryOutput from "@/components/QueryOutput";
+import type { QueryRun } from "@/components/QueryEditor";
 import { ResultPanel, Grid, PanelTitle } from "@/components/ResultPanel";
-import { experience, responsibilities } from "@/lib/data";
+import { experience, normalizePortfolioQuery, responsibilities } from "@/lib/data";
 
 function formatMonthYear(value: string) {
   const date = new Date(value);
@@ -84,14 +86,24 @@ function RecognitionPreview({
 }
 
 export default function ExperienceView() {
-  const [ran, setRan] = useState<number[]>([]);
+  const [results, setResults] = useState<Record<number, QueryRun | undefined>>({});
+  const run = (index: number, result: QueryRun | null) =>
+    setResults((previous) => {
+      if (result) return { ...previous, [index]: result };
+      const { [index]: _, ...remaining } = previous;
+      return remaining;
+    });
+  const hasRun = (index: number, query: string) =>
+    Boolean(results[index] && normalizePortfolioQuery(results[index]!.query) === normalizePortfolioQuery(query));
+  const experienceQuery = "SELECT id, role, company, start_date, end_date FROM experience ORDER BY start_date DESC;";
 
   return (
     <div>
       <PanelTitle>SQL editor</PanelTitle>
       <QueryEditor
-        onRun={() => setRan((previous) => [...previous, 0])}
-        formattedQuery="SELECT id, role, company, start_date, end_date FROM experience ORDER BY start_date DESC;"
+        onRun={(result) => run(0, result)}
+        formattedQuery={experienceQuery}
+        explanation="Displays work experience in reverse chronological order."
         lines={[
           <>
             {kw("SELECT")}
@@ -120,7 +132,7 @@ export default function ExperienceView() {
         ]}
       />
 
-      {ran.includes(0) && <ResultPanel label="Query result" meta={`${experience.length} rows`}>
+      {hasRun(0, experienceQuery) && <ResultPanel label="Query result" meta={`${experience.length} rows`}>
         <Grid
           headers={["id", "role", "company", "start_date", "end_date"]}
           rows={experience.map((e) => [
@@ -132,6 +144,7 @@ export default function ExperienceView() {
           ])}
         />
       </ResultPanel>}
+      {results[0] && !hasRun(0, experienceQuery) && <QueryOutput result={results[0]} />}
 
       {experience.map((e) => {
         const experienceResponsibilities = responsibilities.filter((item) => item.experience_id === e.id);
@@ -140,8 +153,9 @@ export default function ExperienceView() {
           <div key={e.id}>
             <PanelTitle>Role detail — {e.company}</PanelTitle>
             <QueryEditor
-              onRun={() => setRan((previous) => [...previous, e.id])}
+              onRun={(result) => run(e.id, result)}
               formattedQuery={`SELECT responsibility FROM responsibilities WHERE experience_id = ${e.id};`}
+              explanation={`Lists the responsibilities for the ${e.role} role.`}
               lines={[
                 <>
                   {kw("SELECT")} responsibility {kw("FROM")} {fn("responsibilities")}
@@ -151,7 +165,7 @@ export default function ExperienceView() {
                 </>,
               ]}
             />
-            {ran.includes(e.id) && <ResultPanel label="Query result" meta={`${experienceResponsibilities.length} rows`}>
+            {hasRun(e.id, `SELECT responsibility FROM responsibilities WHERE experience_id = ${e.id};`) && <ResultPanel label="Query result" meta={`${experienceResponsibilities.length} rows`}>
               <Grid
                 headers={["responsibility"]}
                 rows={experienceResponsibilities.map((item) => [
@@ -161,6 +175,7 @@ export default function ExperienceView() {
                 ])}
               />
             </ResultPanel>}
+            {results[e.id] && !hasRun(e.id, `SELECT responsibility FROM responsibilities WHERE experience_id = ${e.id};`) && <QueryOutput result={results[e.id]!} />}
           </div>
         );
       })}

@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { PanelTitle } from "@/components/ResultPanel";
-import { terminalResponses } from "@/lib/data";
+import { resolvePortfolioQuery, terminalResponses } from "@/lib/data";
 
 type LogEntry = { type: "cmd" | "out"; text: string };
 
@@ -20,31 +20,7 @@ export default function TerminalView() {
     value.trim().replace(/;\s*$/, "").replace(/\s+/g, " ").toUpperCase();
 
   const resolveCommandOutput = (raw: string) => {
-    const normalized = normalizeCommand(raw);
-
-    if (normalized === "CLEAR" || normalized === "CLS") {
-      return "";
-    }
-
-    if (terminalResponses[normalized]) {
-      return terminalResponses[normalized];
-    }
-
-    const underscoreKey = normalized.replace(/\s+/g, "_");
-    if (terminalResponses[underscoreKey]) {
-      return terminalResponses[underscoreKey];
-    }
-
-    const selectMatch = raw.trim().match(/^SELECT\s+\*\s+FROM\s+([A-Z_]+)\s*;?$/i);
-    if (selectMatch) {
-      const table = selectMatch[1].toUpperCase();
-      const selectQuery = `SELECT * FROM ${table}`;
-      if (terminalResponses[selectQuery]) {
-        return terminalResponses[selectQuery];
-      }
-    }
-
-    return `Unknown command: '${raw}'. Type HELP for a list of commands.`;
+    return resolvePortfolioQuery(raw) ?? `Unknown command: '${raw}'. Type HELP for a list of commands.`;
   };
 
   const runCommand = () => {

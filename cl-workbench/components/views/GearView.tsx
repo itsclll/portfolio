@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { gearSections } from "@/lib/data";
 import QueryEditor, { fn, kw, str } from "@/components/QueryEditor";
+import QueryOutput from "@/components/QueryOutput";
+import type { QueryRun } from "@/components/QueryEditor";
 import { ResultPanel, Grid, PanelTitle } from "@/components/ResultPanel";
+import { normalizePortfolioQuery } from "@/lib/data";
 
 type ImagePreviewProps = {
   image: string;
@@ -79,7 +82,17 @@ function GearImagePreview({ image, name }: ImagePreviewProps) {
 }
 
 export default function GearView() {
-  const [ran, setRan] = useState<boolean[]>([]);
+  const [results, setResults] = useState<Record<number, QueryRun | undefined>>({});
+  const run = (index: number, result: QueryRun | null) =>
+    setResults((previous) => {
+      if (result) return { ...previous, [index]: result };
+      const { [index]: _, ...remaining } = previous;
+      return remaining;
+    });
+  const hasRun = (index: number, query: string) =>
+    Boolean(results[index] && normalizePortfolioQuery(results[index]!.query) === normalizePortfolioQuery(query));
+  const deskSetupQuery = "SELECT gear, purpose, product FROM gear WHERE type = 'desk_setup';";
+  const everydayCarryQuery = "SELECT gear, purpose, product FROM gear WHERE type = 'everyday_carry';";
   const deskSetup = gearSections[0].items;
   const everydayCarry = gearSections[1].items;
 
@@ -100,8 +113,9 @@ export default function GearView() {
       <PanelTitle>SQL editor</PanelTitle>
 
       <QueryEditor
-        onRun={() => setRan((previous) => [...previous, 0])}
-        formattedQuery="SELECT gear, purpose, product FROM gear WHERE type = 'desk_setup';"
+        onRun={(result) => run(0, result)}
+        formattedQuery={deskSetupQuery}
+        explanation="Shows the desk setup used for development, testing, and daily work."
         lines={[
           <>
             {kw("SELECT")} gear, purpose, product {kw("FROM")} {fn("gear")}
@@ -112,7 +126,7 @@ export default function GearView() {
         ]}
       />
 
-      {ran.includes(0) && <ResultPanel
+      {hasRun(0, deskSetupQuery) && <ResultPanel
         label="Query result"
         meta={`${deskSetup.length} rows`}
       >
@@ -138,6 +152,7 @@ export default function GearView() {
           ])}
         />
       </ResultPanel>}
+      {results[0] && !hasRun(0, deskSetupQuery) && <QueryOutput result={results[0]} />}
 
       {/* =========================
           EVERYDAY CARRY
@@ -146,8 +161,9 @@ export default function GearView() {
       <PanelTitle>SQL editor</PanelTitle>
 
       <QueryEditor
-        onRun={() => setRan((previous) => [...previous, 1])}
-        formattedQuery="SELECT gear, purpose, product FROM gear WHERE type = 'everyday_carry';"
+        onRun={(result) => run(1, result)}
+        formattedQuery={everydayCarryQuery}
+        explanation="Shows the everyday devices and accessories used on the go."
         lines={[
           <>
             {kw("SELECT")} gear, purpose, product {kw("FROM")} {fn("gear")}
@@ -158,7 +174,7 @@ export default function GearView() {
         ]}
       />
 
-      {ran.includes(1) && <ResultPanel
+      {hasRun(1, everydayCarryQuery) && <ResultPanel
         label="Query result"
         meta={`${everydayCarry.length} rows`}
       >
@@ -184,6 +200,7 @@ export default function GearView() {
           ])}
         />
       </ResultPanel>}
+      {results[1] && !hasRun(1, everydayCarryQuery) && <QueryOutput result={results[1]} />}
     </div>
   );
 }

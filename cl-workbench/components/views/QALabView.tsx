@@ -42,7 +42,7 @@ export default function QALabView() {
       {result && !isTestCasesQuery && <QueryOutput result={result} />}
 
       <PanelTitle>Bug report</PanelTitle>
-      <div className="border border-border rounded-md bg-bg-1 px-5 py-4.5">
+      <div className="rounded-md border border-border bg-bg-1 px-5 pb-5 pt-4">
         <div className="flex justify-between items-center mb-3.5 pb-3 border-b border-border">
           <span className="text-accent font-semibold text-[13.5px]">{bugTicket.id}</span>
           <Badge kind="fixed">{bugTicket.status}</Badge>

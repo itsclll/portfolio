@@ -16,7 +16,7 @@ export default function Badge({
 }) {
   return (
     <span
-      className={`inline-block text-[10.5px] px-2.5 py-0.5 rounded border ${styles[kind]}`}
+      className={`inline-flex items-center rounded border px-2 py-0.5 text-[10.5px] leading-none ${styles[kind]}`}
     >
       {children}
     </span>

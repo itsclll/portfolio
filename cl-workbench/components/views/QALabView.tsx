@@ -1,13 +1,18 @@
+import { useState } from "react";
 import QueryEditor, { kw, fn, str } from "@/components/QueryEditor";
 import { ResultPanel, Grid, PanelTitle } from "@/components/ResultPanel";
 import Badge from "@/components/Badge";
 import { testCases, bugTicket } from "@/lib/data";
 
 export default function QALabView() {
+  const [hasRun, setHasRun] = useState(false);
+
   return (
     <div>
       <PanelTitle>SQL editor</PanelTitle>
       <QueryEditor
+        onRun={() => setHasRun(true)}
+        formattedQuery="SELECT * FROM test_cases WHERE project = 'FIDS';"
         lines={[
           <>
             {kw("SELECT")} * {kw("FROM")} {fn("test_cases")}
@@ -18,24 +23,7 @@ export default function QALabView() {
         ]}
       />
 
-      <PanelTitle>Test execution</PanelTitle>
-      <div className="border border-border rounded-md p-4.5 mb-4.5 bg-bg-1">
-        <div className="flex justify-between items-baseline mb-2.5">
-          <span>QA scope</span>
-          <span className="text-lg font-bold text-green">TOPCIT L2</span>
-        </div>
-        <div className="h-2.5 bg-bg-2 rounded-full overflow-hidden border border-border mb-3">
-          <div className="h-full bg-gradient-to-r from-accent-dim to-green" style={{ width: "88%" }} />
-        </div>
-        <div className="flex gap-6 text-xs text-text-1 flex-wrap">
-          <span>Workflow <b className="text-text-0">passed</b></span>
-          <span>LAN/network <b className="text-text-0">passed</b></span>
-          <span>Database <b className="text-text-0">passed</b></span>
-          <span>Cert score <b className="text-text-0">150–399</b></span>
-        </div>
-      </div>
-
-      <ResultPanel label="Test cases" meta={`${testCases.length} rows`}>
+      {hasRun && <ResultPanel label="Test cases" meta={`${testCases.length} rows`}>
         <Grid
           headers={["id", "case", "status"]}
           rows={testCases.map((t) => [
@@ -46,7 +34,7 @@ export default function QALabView() {
             </Badge>,
           ])}
         />
-      </ResultPanel>
+      </ResultPanel>}
 
       <PanelTitle>Bug report</PanelTitle>
       <div className="border border-border rounded-md bg-bg-1 px-5 py-4.5">

@@ -38,9 +38,9 @@ export default function TerminalView() {
     const selectMatch = raw.trim().match(/^SELECT\s+\*\s+FROM\s+([A-Z_]+)\s*;?$/i);
     if (selectMatch) {
       const table = selectMatch[1].toUpperCase();
-      const showQuery = `SHOW ${table}`;
-      if (terminalResponses[showQuery]) {
-        return terminalResponses[showQuery];
+      const selectQuery = `SELECT * FROM ${table}`;
+      if (terminalResponses[selectQuery]) {
+        return terminalResponses[selectQuery];
       }
     }
 

@@ -183,11 +183,14 @@ export default function DatabaseView({ section }: { section: DatabaseSection | n
   }, [section]);
  
   const photos = profile.photos && profile.photos.length ? profile.photos : [profile.photo];
+  const [hasRun, setHasRun] = useState(false);
  
   return (
     <div>
       <PanelTitle>SQL editor</PanelTitle>
       <QueryEditor
+        onRun={() => setHasRun(true)}
+        formattedQuery="SELECT * FROM profile;"
         lines={[
           <>{kw("SELECT")} *</>,
           <>
@@ -196,9 +199,9 @@ export default function DatabaseView({ section }: { section: DatabaseSection | n
         ]}
       />
 
-      <PanelTitle>Query result</PanelTitle>
+      {hasRun && <PanelTitle>Query result</PanelTitle>}
 
-      <div id="database-profile">
+      {hasRun && <div id="database-profile">
         <ResultPanel label="Data output" meta="1 row in 0.003s">
           <div className="px-3.5 py-3.5">
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-[340px_minmax(0,1fr)]">
@@ -274,7 +277,7 @@ export default function DatabaseView({ section }: { section: DatabaseSection | n
             </div>
           </div>
         </ResultPanel>
-      </div>
+      </div>}
  
       <div id="database-education">
         <PanelTitle>Education</PanelTitle>

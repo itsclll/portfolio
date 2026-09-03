@@ -207,18 +207,57 @@ const gearSummary = gearSections
 
 // terminal command responses — keys must be UPPERCASE
 export const terminalResponses: Record<string, string> = {
-  HELP: "Available commands:\n- SELECT * FROM TABLES\n- SELECT * FROM PROFILE\n- SELECT * FROM EDUCATION\n- SELECT * FROM SKILLS\n- SELECT * FROM CERTIFICATIONS\n- SELECT * FROM PROJECTS\n- SELECT * FROM QA\n- SELECT * FROM EXPERIENCE\n- SELECT * FROM CONTACT\n- SELECT * FROM BUG_TICKET\n- SELECT * FROM GEAR\n- SHOW PROFILE, SHOW PROJECTS, SHOW SKILLS, SHOW QA\n- CLEAR / CLS (clears the terminal output)",
-  "SHOW TABLES":
+  HELP_LEGACY: "Available commands:\n- SELECT * FROM TABLES\n- SELECT * FROM PROFILE\n- SELECT * FROM EDUCATION\n- SELECT * FROM SKILLS\n- SELECT * FROM CERTIFICATIONS\n- SELECT * FROM PROJECTS\n- SELECT * FROM QA\n- SELECT * FROM EXPERIENCE\n- SELECT * FROM CONTACT\n- SELECT * FROM BUG_TICKET\n- SELECT * FROM GEAR\n- SELECT DISTINCT ROLE FROM PROJECTS\n- SELECT * FROM EXPERIENCE ORDER BY START_DATE DESC\n- SELECT * FROM PROJECTS WHERE STATUS = 'COMPLETE'\n- HELP\n- CLEAR / CLS (clears the terminal output)",
+  HELP_PREVIOUS: "Available commands:\n- SELECT * FROM TABLES\n- SELECT * FROM PROFILE\n- SELECT * FROM PROJECTS\n- SELECT * FROM PROJECT_DETAILS WHERE PROJECT_ID = '01'\n- SELECT CONTRIBUTION FROM PROJECT_CONTRIBUTIONS WHERE PROJECT_ID = '01' ORDER BY ID\n- SELECT * FROM PROJECT_DETAILS WHERE PROJECT_ID = '02'\n- SELECT CONTRIBUTION FROM PROJECT_CONTRIBUTIONS WHERE PROJECT_ID = '02' ORDER BY ID\n- SELECT ID, ROLE, COMPANY, DATE_FORMAT(START_DATE, '%B %Y') AS START_DATE, DATE_FORMAT(END_DATE, '%B %Y') AS END_DATE FROM EXPERIENCE ORDER BY START_DATE DESC\n- SELECT RESPONSIBILITY FROM RESPONSIBILITIES WHERE EXPERIENCE_ID = 1\n- SELECT RESPONSIBILITY FROM RESPONSIBILITIES WHERE EXPERIENCE_ID = 2\n- SELECT GEAR, PURPOSE, PRODUCT FROM GEAR WHERE TYPE = 'DESK_SETUP'\n- SELECT GEAR, PURPOSE, PRODUCT FROM GEAR WHERE TYPE = 'EVERYDAY_CARRY'\n- SELECT * FROM TEST_CASES WHERE PROJECT = 'FIDS'\n- SELECT COUNT(*) AS TOTAL FROM PROJECTS\n- SELECT SUM(ID) AS TOTAL FROM PROJECTS\n- SELECT * FROM EDUCATION / SKILLS / CERTIFICATIONS / QA / CONTACT / BUG_TICKET\n- SELECT DISTINCT ROLE FROM PROJECTS\n- SELECT * FROM EXPERIENCE ORDER BY START_DATE DESC\n- SELECT * FROM PROJECTS WHERE STATUS = 'COMPLETE'\n- HELP\n- CLEAR / CLS (clears the terminal output)",
+  HELP: "Available commands:\n- SELECT * FROM TABLES\n- SELECT * FROM PROFILE\n- SELECT * FROM PROJECTS\n- SELECT * FROM PROJECT_DETAILS WHERE PROJECT_ID = '01'\n- SELECT CONTRIBUTION FROM PROJECT_CONTRIBUTIONS WHERE PROJECT_ID = '01' ORDER BY ID\n- SELECT * FROM PROJECT_DETAILS WHERE PROJECT_ID = '02'\n- SELECT CONTRIBUTION FROM PROJECT_CONTRIBUTIONS WHERE PROJECT_ID = '02' ORDER BY ID\n- SELECT ID, ROLE, COMPANY, DATE_FORMAT(START_DATE, '%B %Y') AS START_DATE, DATE_FORMAT(END_DATE, '%B %Y') AS END_DATE FROM EXPERIENCE ORDER BY START_DATE DESC\n- SELECT RESPONSIBILITY FROM RESPONSIBILITIES WHERE EXPERIENCE_ID = 1\n- SELECT RESPONSIBILITY FROM RESPONSIBILITIES WHERE EXPERIENCE_ID = 2\n- SELECT GEAR, PURPOSE, PRODUCT FROM GEAR WHERE TYPE = 'DESK_SETUP'\n- SELECT GEAR, PURPOSE, PRODUCT FROM GEAR WHERE TYPE = 'EVERYDAY_CARRY'\n- SELECT * FROM TEST_CASES WHERE PROJECT = 'FIDS'\n- SELECT COUNT(*) AS TOTAL FROM PROJECTS\n- SELECT SUM(ID) AS TOTAL FROM PROJECTS\n- SELECT NAME, ROLE FROM PROFILE\n- SELECT CATEGORY, VALUE FROM SKILLS WHERE CATEGORY = 'Frontend'\n- SELECT NAME, ISSUER, RESULT FROM CERTIFICATIONS\n- SELECT ID, NAME, STATUS FROM TEST_CASES\n- SELECT ID, ROLE, COMPANY FROM EXPERIENCE\n- SELECT NAME, STATUS FROM PROJECTS\n- SELECT PROJECT, SEVERITY, STATUS FROM BUG_TICKET\n- SELECT COUNT(*) AS TOTAL FROM EXPERIENCE\n- SELECT COUNT(*) AS TOTAL FROM SKILLS\n- SELECT COUNT(*) AS TOTAL FROM TEST_CASES\n- SELECT * FROM EDUCATION / SKILLS / CERTIFICATIONS / QA / CONTACT / BUG_TICKET\n- SELECT DISTINCT ROLE FROM PROJECTS\n- SELECT * FROM EXPERIENCE ORDER BY START_DATE DESC\n- SELECT * FROM PROJECTS WHERE STATUS = 'COMPLETE'\n- HELP\n- CLEAR / CLS (clears the terminal output)",
+  "SELECT * FROM TABLES":
     "+----------------------+\n| Tables_in_portfolio  |\n+----------------------+\n| profile              |\n| education           |\n| skills              |\n| certifications      |\n| projects            |\n| experience          |\n| test_cases          |\n| bug_reports         |\n| gear                |\n+----------------------+\n9 rows in set (0.001 sec)",
-  "SHOW PROFILE": `${profileSummary}\n\n1 row returned.`,
-  "SHOW EDUCATION": `${educationSummary}\n\n1 row returned.`,
-  "SHOW PROJECTS": `${projectSummary}\n\n${projects.length} rows returned.`,
-  "SHOW SKILLS":
+  "SELECT * FROM PROFILE": `${profileSummary}\n\n1 row returned.`,
+  "SELECT * FROM EDUCATION": `${educationSummary}\n\n1 row returned.`,
+  "SELECT * FROM PROJECTS": `${projectSummary}\n\n${projects.length} rows returned.`,
+  "SELECT * FROM SKILLS":
     `${skills.map((item) => `${item.category}: ${item.value}`).join("\n")}\n\n${skills.length} rows returned.`,
-  "SHOW CERTIFICATIONS": `${certificationSummary}\n\n${certifications.length} rows returned.`,
-  "SHOW QA": `${qaSummary}\n\n${testCases.length} rows returned.`,
-  "SHOW EXPERIENCE": `${experienceSummary}\n\n${experience.length} rows returned.`,
-  "SHOW BUG_TICKET": `${bugSummary}\n\n1 row returned.`,
-  "SHOW GEAR": `${gearSummary}\n\n${gearSections.reduce((total, section) => total + section.items.length, 0)} rows returned.`,
-  "SHOW CONTACT": `email: ${profile.email}\nphone: ${profile.phone}\nlocation: ${profile.location}\nlinkedin: ${profile.linkedin}\n\n1 row returned.`,
+  "SELECT * FROM CERTIFICATIONS": `${certificationSummary}\n\n${certifications.length} rows returned.`,
+  "SELECT * FROM QA": `${qaSummary}\n\n${testCases.length} rows returned.`,
+  "SELECT * FROM EXPERIENCE": `${experienceSummary}\n\n${experience.length} rows returned.`,
+  "SELECT * FROM BUG_TICKET": `${bugSummary}\n\n1 row returned.`,
+  "SELECT * FROM GEAR": `${gearSummary}\n\n${gearSections.reduce((total, section) => total + section.items.length, 0)} rows returned.`,
+  "SELECT * FROM CONTACT": `email: ${profile.email}\nphone: ${profile.phone}\nlocation: ${profile.location}\nlinkedin: ${profile.linkedin}\n\n1 row returned.`,
+  "SELECT DISTINCT ROLE FROM PROJECTS": "+---------------------+\n| role                |\n+---------------------+\n| Quality Assurance   |\n| Project Manager     |\n+---------------------+\n2 rows returned.",
+  "SELECT * FROM EXPERIENCE ORDER BY START_DATE DESC": `${experienceSummary}\n\n${experience.length} rows returned.`,
+  "SELECT * FROM PROJECTS WHERE STATUS = 'COMPLETE'": `${projectSummary}\n\n${projects.length} rows returned.`,
+  "SELECT COUNT(*) AS TOTAL FROM PROJECTS": `total\n${projects.length}\n\n1 row returned.`,
+  "SELECT SUM(ID) AS TOTAL FROM PROJECTS": `total\n3\n\n1 row returned.`,
+  "SELECT NAME, ROLE FROM PROFILE": `name: ${profile.name}\nrole: ${profile.role}\n\n1 row returned.`,
+  "SELECT CATEGORY, VALUE FROM SKILLS WHERE CATEGORY = 'FRONTEND'": `${skills.find((item) => item.category === "Frontend")?.category}: ${skills.find((item) => item.category === "Frontend")?.value}\n\n1 row returned.`,
+  "SELECT NAME, ISSUER, RESULT FROM CERTIFICATIONS": `${certifications.map((item) => `${item.name} | ${item.issuer} | ${item.result}`).join("\n")}\n\n${certifications.length} rows returned.`,
+  "SELECT ID, NAME, STATUS FROM TEST_CASES": `${testCases.map((item) => `${item.id} | ${item.name} | ${item.status}`).join("\n")}\n\n${testCases.length} rows returned.`,
+  "SELECT ID, ROLE, COMPANY FROM EXPERIENCE": `${experience.map((item) => `${item.id} | ${item.role} | ${item.company}`).join("\n")}\n\n${experience.length} rows returned.`,
+  "SELECT NAME, STATUS FROM PROJECTS": `${projects.map((item) => `${item.name} | ${item.status}`).join("\n")}\n\n${projects.length} rows returned.`,
+  "SELECT PROJECT, SEVERITY, STATUS FROM BUG_TICKET": `project: ${bugTicket.project}\nseverity: ${bugTicket.severity}\nstatus: ${bugTicket.status}\n\n1 row returned.`,
+  "SELECT COUNT(*) AS TOTAL FROM EXPERIENCE": `total\n${experience.length}\n\n1 row returned.`,
+  "SELECT COUNT(*) AS TOTAL FROM SKILLS": `total\n${skills.length}\n\n1 row returned.`,
+  "SELECT COUNT(*) AS TOTAL FROM TEST_CASES": `total\n${testCases.length}\n\n1 row returned.`,
+  "SELECT * FROM PROJECT_DETAILS WHERE PROJECT_ID = '01'": `${projectDetails.sluCca.project}\ntype: ${projectDetails.sluCca.type}\nrole: ${projectDetails.sluCca.role}\ntechnologies: ${projectDetails.sluCca.technologies}\n\n1 row returned.`,
+  "SELECT CONTRIBUTION FROM PROJECT_CONTRIBUTIONS WHERE PROJECT_ID = '01' ORDER BY ID": `${projectDetails.sluCca.contributions.map((contribution, index) => `${index + 1}. ${contribution}`).join("\n")}\n\n${projectDetails.sluCca.contributions.length} rows returned.`,
+  "SELECT * FROM PROJECT_DETAILS WHERE PROJECT_ID = '02'": `${projectDetails.adal.project}\ntype: ${projectDetails.adal.type}\nrole: ${projectDetails.adal.role}\ntechnologies: ${projectDetails.adal.technologies}\n\n1 row returned.`,
+  "SELECT CONTRIBUTION FROM PROJECT_CONTRIBUTIONS WHERE PROJECT_ID = '02' ORDER BY ID": `${projectDetails.adal.contributions.map((contribution, index) => `${index + 1}. ${contribution}`).join("\n")}\n\n${projectDetails.adal.contributions.length} rows returned.`,
+  "SELECT ID, ROLE, COMPANY, DATE_FORMAT(START_DATE, '%B %Y') AS START_DATE, DATE_FORMAT(END_DATE, '%B %Y') AS END_DATE FROM EXPERIENCE ORDER BY START_DATE DESC": experience
+    .map((item) => `${item.id} | ${item.role} | ${item.company} | ${item.period}`)
+    .join("\n") + `\n\n${experience.length} rows returned.`,
+  "SELECT RESPONSIBILITY FROM RESPONSIBILITIES WHERE EXPERIENCE_ID = 1": responsibilities
+    .filter((item) => item.experience_id === 1)
+    .map((item) => item.responsibility)
+    .join("\n") + "\n\n4 rows returned.",
+  "SELECT RESPONSIBILITY FROM RESPONSIBILITIES WHERE EXPERIENCE_ID = 2": responsibilities
+    .filter((item) => item.experience_id === 2)
+    .map((item) => item.responsibility)
+    .join("\n") + "\n\n4 rows returned.",
+  "SELECT GEAR, PURPOSE, PRODUCT FROM GEAR WHERE TYPE = 'DESK_SETUP'": gearSections[0].items
+    .map((item) => `${item.name} | ${item.detail} | ${item.url}`)
+    .join("\n") + `\n\n${gearSections[0].items.length} rows returned.`,
+  "SELECT GEAR, PURPOSE, PRODUCT FROM GEAR WHERE TYPE = 'EVERYDAY_CARRY'": gearSections[1].items
+    .map((item) => `${item.name} | ${item.detail} | ${item.url}`)
+    .join("\n") + `\n\n${gearSections[1].items.length} rows returned.`,
+  "SELECT * FROM TEST_CASES WHERE PROJECT = 'FIDS'": `${qaSummary}\n\n${testCases.length} rows returned.`,
 };

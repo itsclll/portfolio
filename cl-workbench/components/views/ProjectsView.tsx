@@ -1,3 +1,4 @@
+import { useState } from "react";
 import QueryEditor, { kw, fn, str } from "@/components/QueryEditor";
 import { ResultPanel, Grid, PanelTitle } from "@/components/ResultPanel";
 import Badge from "@/components/Badge";
@@ -7,10 +8,15 @@ const statusKind = (s: string) =>
   s === "DEPLOYED" ? "live" : s === "COMPLETE" ? "pass" : "fixed";
 
 export default function ProjectsView() {
+  const [ran, setRan] = useState<boolean[]>([]);
+  const run = (index: number) => setRan((previous) => [...previous, index]);
+
   return (
     <div>
       <PanelTitle>SQL editor</PanelTitle>
       <QueryEditor
+        onRun={() => run(0)}
+        formattedQuery="SELECT * FROM projects;"
         lines={[
           <>
             {kw("SELECT")} * {kw("FROM")} {fn("projects")};
@@ -18,7 +24,7 @@ export default function ProjectsView() {
         ]}
       />
 
-      <ResultPanel label="Query result" meta={`${projects.length} rows in 0.002s`}>
+      {ran.includes(0) && <ResultPanel label="Query result" meta={`${projects.length} rows in 0.002s`}>
         <Grid
           headers={["id", "project", "status"]}
           rows={projects.map((p) => [
@@ -27,10 +33,12 @@ export default function ProjectsView() {
             <Badge kind={statusKind(p.status)} key={p.status}>{p.status}</Badge>,
           ])}
         />
-      </ResultPanel>
+      </ResultPanel>}
 
       <PanelTitle>Project detail — SLU CCA Ticketing System</PanelTitle>
       <QueryEditor
+        onRun={() => run(1)}
+        formattedQuery="SELECT * FROM project_details WHERE project_id = '01';"
         lines={[
           <>
             {kw("SELECT")} * {kw("FROM")} {fn("project_details")}
@@ -40,7 +48,7 @@ export default function ProjectsView() {
           </>,
         ]}
       />
-      <ResultPanel label="Query result" meta="1 row returned">
+      {ran.includes(1) && <ResultPanel label="Query result" meta="1 row returned">
         <Grid
           headers={["project", "type", "role", "technologies"]}
           rows={[
@@ -52,10 +60,12 @@ export default function ProjectsView() {
             ],
           ]}
         />
-      </ResultPanel>
+      </ResultPanel>}
 
       <PanelTitle>SQL editor</PanelTitle>
       <QueryEditor
+        onRun={() => run(2)}
+        formattedQuery="SELECT contribution FROM project_contributions WHERE project_id = '01' ORDER BY id;"
         lines={[
           <>
             {kw("SELECT")} contribution
@@ -71,7 +81,7 @@ export default function ProjectsView() {
           </>,
         ]}
       />
-      <ResultPanel label="Query result" meta="4 items">
+      {ran.includes(2) && <ResultPanel label="Query result" meta="4 items">
         <Grid
           headers={["contribution"]}
           rows={projectDetails.sluCca.contributions.map((contribution) => [
@@ -80,10 +90,12 @@ export default function ProjectsView() {
             </span>,
           ])}
         />
-      </ResultPanel>
+      </ResultPanel>}
 
       <PanelTitle>Project detail — Adal</PanelTitle>
       <QueryEditor
+        onRun={() => run(3)}
+        formattedQuery="SELECT * FROM project_details WHERE project_id = '02';"
         lines={[
           <>
             {kw("SELECT")} * {kw("FROM")} {fn("project_details")}
@@ -93,7 +105,7 @@ export default function ProjectsView() {
           </>,
         ]}
       />
-      <ResultPanel label="Query result" meta="1 row returned">
+      {ran.includes(3) && <ResultPanel label="Query result" meta="1 row returned">
         <Grid
           headers={["project", "type", "role", "technologies"]}
           rows={[
@@ -105,10 +117,12 @@ export default function ProjectsView() {
             ],
           ]}
         />
-      </ResultPanel>
+      </ResultPanel>}
 
       <PanelTitle>SQL editor</PanelTitle>
       <QueryEditor
+        onRun={() => run(4)}
+        formattedQuery="SELECT contribution FROM project_contributions WHERE project_id = '02' ORDER BY id;"
         lines={[
           <>
             {kw("SELECT")} contribution
@@ -124,7 +138,7 @@ export default function ProjectsView() {
           </>,
         ]}
       />
-      <ResultPanel label="Query result" meta="4 items">
+      {ran.includes(4) && <ResultPanel label="Query result" meta="4 items">
         <Grid
           headers={["contribution"]}
           rows={projectDetails.adal.contributions.map((contribution) => [
@@ -133,7 +147,7 @@ export default function ProjectsView() {
             </span>,
           ])}
         />
-      </ResultPanel>
+      </ResultPanel>}
     </div>
   );
 }

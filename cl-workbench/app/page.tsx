@@ -17,7 +17,7 @@ export default function Home() {
   const [entered, setEntered] = useState(false);
   const [view, setView] = useState<ViewId>("projects");
   const [databaseSection, setDatabaseSection] = useState<DatabaseSection | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const mainRef = useRef<HTMLElement | null>(null);
 
   const handleViewChange = (nextView: ViewId) => {

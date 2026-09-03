@@ -84,10 +84,14 @@ function RecognitionPreview({
 }
 
 export default function ExperienceView() {
+  const [ran, setRan] = useState<number[]>([]);
+
   return (
     <div>
       <PanelTitle>SQL editor</PanelTitle>
       <QueryEditor
+        onRun={() => setRan((previous) => [...previous, 0])}
+        formattedQuery="SELECT id, role, company, start_date, end_date FROM experience ORDER BY start_date DESC;"
         lines={[
           <>
             {kw("SELECT")}
@@ -116,7 +120,7 @@ export default function ExperienceView() {
         ]}
       />
 
-      <ResultPanel label="Query result" meta={`${experience.length} rows`}>
+      {ran.includes(0) && <ResultPanel label="Query result" meta={`${experience.length} rows`}>
         <Grid
           headers={["id", "role", "company", "start_date", "end_date"]}
           rows={experience.map((e) => [
@@ -127,7 +131,7 @@ export default function ExperienceView() {
             formatMonthYear(e.end_date),
           ])}
         />
-      </ResultPanel>
+      </ResultPanel>}
 
       {experience.map((e) => {
         const experienceResponsibilities = responsibilities.filter((item) => item.experience_id === e.id);
@@ -136,6 +140,8 @@ export default function ExperienceView() {
           <div key={e.id}>
             <PanelTitle>Role detail — {e.company}</PanelTitle>
             <QueryEditor
+              onRun={() => setRan((previous) => [...previous, e.id])}
+              formattedQuery={`SELECT responsibility FROM responsibilities WHERE experience_id = ${e.id};`}
               lines={[
                 <>
                   {kw("SELECT")} responsibility {kw("FROM")} {fn("responsibilities")}
@@ -145,7 +151,7 @@ export default function ExperienceView() {
                 </>,
               ]}
             />
-            <ResultPanel label="Query result" meta={`${experienceResponsibilities.length} rows`}>
+            {ran.includes(e.id) && <ResultPanel label="Query result" meta={`${experienceResponsibilities.length} rows`}>
               <Grid
                 headers={["responsibility"]}
                 rows={experienceResponsibilities.map((item) => [
@@ -154,7 +160,7 @@ export default function ExperienceView() {
                   </span>,
                 ])}
               />
-            </ResultPanel>
+            </ResultPanel>}
           </div>
         );
       })}

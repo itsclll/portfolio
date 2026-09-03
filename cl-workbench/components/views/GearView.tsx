@@ -79,6 +79,7 @@ function GearImagePreview({ image, name }: ImagePreviewProps) {
 }
 
 export default function GearView() {
+  const [ran, setRan] = useState<boolean[]>([]);
   const deskSetup = gearSections[0].items;
   const everydayCarry = gearSections[1].items;
 
@@ -99,6 +100,8 @@ export default function GearView() {
       <PanelTitle>SQL editor</PanelTitle>
 
       <QueryEditor
+        onRun={() => setRan((previous) => [...previous, 0])}
+        formattedQuery="SELECT gear, purpose, product FROM gear WHERE type = 'desk_setup';"
         lines={[
           <>
             {kw("SELECT")} gear, purpose, product {kw("FROM")} {fn("gear")}
@@ -109,7 +112,7 @@ export default function GearView() {
         ]}
       />
 
-      <ResultPanel
+      {ran.includes(0) && <ResultPanel
         label="Query result"
         meta={`${deskSetup.length} rows`}
       >
@@ -134,7 +137,7 @@ export default function GearView() {
             </a>,
           ])}
         />
-      </ResultPanel>
+      </ResultPanel>}
 
       {/* =========================
           EVERYDAY CARRY
@@ -143,6 +146,8 @@ export default function GearView() {
       <PanelTitle>SQL editor</PanelTitle>
 
       <QueryEditor
+        onRun={() => setRan((previous) => [...previous, 1])}
+        formattedQuery="SELECT gear, purpose, product FROM gear WHERE type = 'everyday_carry';"
         lines={[
           <>
             {kw("SELECT")} gear, purpose, product {kw("FROM")} {fn("gear")}
@@ -153,7 +158,7 @@ export default function GearView() {
         ]}
       />
 
-      <ResultPanel
+      {ran.includes(1) && <ResultPanel
         label="Query result"
         meta={`${everydayCarry.length} rows`}
       >
@@ -178,7 +183,7 @@ export default function GearView() {
             </a>,
           ])}
         />
-      </ResultPanel>
+      </ResultPanel>}
     </div>
   );
 }

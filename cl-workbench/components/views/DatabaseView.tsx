@@ -217,7 +217,7 @@ export default function DatabaseView({ section }: { section: DatabaseSection | n
                 {/* Social Links */}
                 <div className="mt-4 flex flex-nowrap gap-2">
                   <SocialLink
-                    href="https://www.linkedin.com/in/christian-lucina-5a8686295"
+                    href="https://www.linkedin.com/in/christian-lucina-ab6666394/"
                     label="LinkedIn"
                     icon={<LinkedInIcon />}
                   />
